@@ -10,6 +10,7 @@ namespace AdventOfCode_2024
             List<IAdventOfCodeDayChallenge> adventDayChallenges = new List<IAdventOfCodeDayChallenge>
             {
                 new Day1(),
+                new Day2(),
             };
 
             while (true)
