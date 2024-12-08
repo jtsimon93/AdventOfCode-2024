@@ -5,6 +5,8 @@ namespace AdventOfCode_2024{
     /*
         Challange URL: https://adventofcode.com/2024/day/1
 
+
+        Part 1:
         The challenge was to take a list of number pairs and sort each pair
         in ascending order, then figure out the total difference between 
         each sorted pair. 
@@ -15,10 +17,18 @@ namespace AdventOfCode_2024{
         ----------------------
         Total difference: 9
 
+        Part 2:
+        The challenge was to figure out a similarity score between the two lists 
+        by seeing how many times a number in the first list appears in the second 
+        list. 
+
+        The challenge says to add up each number in the left list after multiplying 
+        it by the number of times it appears in the right list.
+
     */
     public class Day1 : IAdventOfCodeDayChallenge {
 
-        public string MenuDescription {get;} = "Total difference between a list of number pairs";
+        public string MenuDescription {get;} = "Help the Historians with thier lists";
         private List<int> _column1;
         private List<int> _column2;
         private readonly string _inputFilePath;
@@ -33,7 +43,7 @@ namespace AdventOfCode_2024{
 
         public void SolveAll() {
             SolvePart1();
-            //SolvePart2();
+            SolvePart2();
         }
 
         public void SolvePart1() {
@@ -59,7 +69,32 @@ namespace AdventOfCode_2024{
         }
 
         public void SolvePart2() {
-            throw new NotImplementedException();
+            // Convert list one into an occurence dictionary
+            Dictionary<int, int> listOneOccurence = new Dictionary<int,int>();
+
+            for(int i = 0; i < _column1.Count; i++) {
+                if(!listOneOccurence.ContainsKey(_column1[i])) {
+                    listOneOccurence.Add(_column1[i], 0);
+                }
+            }
+
+            // Go through list two and increment the occurence in list one
+            for(int i = 0; i < _column2.Count; i++) {
+                if(listOneOccurence.ContainsKey(_column2[i])) {
+                    listOneOccurence[_column2[i]] += 1;
+                }
+            }
+
+            // Figure out the simularity
+            int simularity = 0;
+
+            foreach(var occurence in listOneOccurence) {
+                int simValue = occurence.Key * occurence.Value;
+                simularity += simValue;
+            }
+
+            Console.WriteLine($"The simularity score is {simularity}");
+
         }
 
         private void LoadInput() {
