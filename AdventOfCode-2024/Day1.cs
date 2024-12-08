@@ -28,7 +28,7 @@ namespace AdventOfCode_2024{
     */
     public class Day1 : IAdventOfCodeDayChallenge {
 
-        public string MenuDescription {get;} = "Help the Historians with thier lists";
+        public string MenuDescription {get;} = "Historian Hysteria";
         private List<int> _column1;
         private List<int> _column2;
         private readonly string _inputFilePath;
