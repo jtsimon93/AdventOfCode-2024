@@ -23,13 +23,14 @@ namespace AdventOfCode_2024
     {
         public string MenuDescription { get; } = "Mull It Over";
         private readonly string _inputFilePath;
-        private List<(int, int)> _partOneNumberPairs;
-        private List<(int, int)> _partTwoNumberPairs;
+        private readonly List<(int, int)> _partOneNumberPairs;
+        private readonly List<(int, int)> _partTwoNumberPairs;
 
         public Day3()
         {
             _inputFilePath = "./files/day3-input.txt";
             _partOneNumberPairs = new List<(int, int)>();
+            _partTwoNumberPairs = new List<(int, int)>();
             LoadDataPartOne();
             LoadDataPartTwo();
         }
@@ -37,14 +38,14 @@ namespace AdventOfCode_2024
         public void SolveAll()
         {
             SolvePart1();
-            //SolvePart2();
+            SolvePart2();
         }
 
         public void SolvePart1()
         {
             int total = 0;
 
-            foreach(var pair in _partOneNumberPairs)
+            foreach (var pair in _partOneNumberPairs)
             {
                 var product = pair.Item1 * pair.Item2;
                 total += product;
@@ -55,14 +56,22 @@ namespace AdventOfCode_2024
 
         public void SolvePart2()
         {
-            throw new NotImplementedException();
+            int total = 0;
+
+            foreach (var pair in _partTwoNumberPairs)
+            {
+                var product = pair.Item1 * pair.Item2;
+                total += product;
+            }
+
+            Console.WriteLine($"The sum of the enabled multiplication pairs is: {total}");
         }
 
         private void LoadDataPartOne()
         {
             // Test at: https://regex101.com
             string regexPattern = @"mul\(\s*(\d+)\s*,\s*(\d+)\s*\)";
-            Regex regex = new Regex(regexPattern, RegexOptions.None);
+            Regex regex = new Regex(regexPattern, RegexOptions.Compiled);
 
             try
             {
@@ -75,6 +84,11 @@ namespace AdventOfCode_2024
 
                         foreach (Match match in matches)
                         {
+                            if (!match.Success)
+                            {
+                                continue;
+                            }
+
                             string firstNumber = match.Groups[1].Value;
                             string secondNumber = match.Groups[2].Value;
 
@@ -83,7 +97,7 @@ namespace AdventOfCode_2024
 
                             if (!firstNumberParse || !secondNumberParse)
                             {
-                                Console.WriteLine($"Invalid input from line: {currentLine}");
+                                Console.WriteLine($"Invalid input ({firstNumber}, {secondNumber}) from line: {currentLine}");
                                 continue;
                             }
 
@@ -100,6 +114,70 @@ namespace AdventOfCode_2024
 
         private void LoadDataPartTwo()
         {
+            // Test at https://regex101.com
+            // Regex named groups: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group
+            string regexPattern = @"mul\(\s*(?<First>\d{1,3})\s*,\s*(?<Second>\d{1,3})\s*\)|do\(\)|don't\(\)";
+            Regex regex = new Regex(regexPattern, RegexOptions.Compiled);
+
+            bool mulInstructionEnabled = true;
+
+            try
+            {
+                using (StreamReader reader = new StreamReader(_inputFilePath))
+                {
+                    string? currentLine = string.Empty;
+                    while ((currentLine = reader.ReadLine()) != null)
+                    {
+                        MatchCollection matches = regex.Matches(currentLine);
+
+                        foreach (Match match in matches)
+                        {
+                            if (!match.Success)
+                            {
+                                continue;
+                            }
+
+                            // Group 1 is the first set of digits, group 2 is the second set
+                            if (match.Groups["First"].Success && match.Groups["Second"].Success)
+                            {
+                                if (!mulInstructionEnabled)
+                                {
+                                    continue;
+                                }
+
+
+                                string firstNumber = match.Groups["First"].Value;
+                                string secondNumber = match.Groups["Second"].Value;
+
+                                var firstNumberParse = int.TryParse(firstNumber, out int parsedFirstNumber);
+                                var secondNumberParse = int.TryParse(secondNumber, out int parsedSecondNumber);
+
+                                if (!firstNumberParse || !secondNumberParse)
+                                {
+                                    Console.WriteLine($"Invalid input from line: {currentLine}");
+                                    Console.WriteLine($"Failed: {firstNumber}, {secondNumber}");
+                                    continue;
+                                }
+
+                                _partTwoNumberPairs.Add((parsedFirstNumber, parsedSecondNumber));
+                            }
+                            else if (match.Value == "do()")
+                            {
+                                mulInstructionEnabled = true;
+                            }
+                            else if (match.Value == "don't()")
+                            {
+                                mulInstructionEnabled = false;
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing the input file: {ex.Message}");
+            }
 
         }
 
