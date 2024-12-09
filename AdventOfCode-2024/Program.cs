@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace AdventOfCode_2024
 {
-    internal class Program
+    internal static class Program
     {
         static void Main(string[] args)
         {
@@ -34,7 +34,7 @@ namespace AdventOfCode_2024
                 Console.WriteLine(new string('-', 40));
                 Console.WriteLine("Select a day (or 'q' to quit): ");
 
-                string input = Console.ReadLine()?.Trim();
+                string? input = Console.ReadLine()?.Trim();
 
                 // Quit option
                 if (input?.ToLower() == "q")
