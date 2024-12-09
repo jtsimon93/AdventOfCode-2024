@@ -25,51 +25,12 @@ namespace AdventOfCode_2024
         public void SolvePart1()
         {
             // Go thorugh each report and determine if it is safe
-            // Reports default as not safe, so we only set it safe if
-            // it meets the criteria
-            foreach(var report in _reports) {
-                bool allIncreasing = true;
-                bool allDecreasing = true;
-                bool varyingWithin3 = true;
-
-                var readings = report.Readings;
-
-                // Check if each number is increasing
-                for(int i = 1; i < readings.Count; i++) {
-                    if(readings[i] < readings[i - 1] || readings[i] == readings[i - 1]) {
-                        allIncreasing = false;
-                        break;
-                    }
+            foreach (var report in _reports)
+            {
+                if (IsSafe(report.Readings))
+                {
+                    report.IsSafe = true;
                 }
-
-                // Check if each number is decreasing
-                for(int i = 1; i < readings.Count; i++) {
-                    if(readings[i] > readings[i -1] || readings[i] == readings[i - 1]) {
-                        allDecreasing = false;
-                        break;
-                    }
-                }
-
-                // If it is not all increasing or all decreasing, unsafe
-                if(!allIncreasing && !allDecreasing) {
-                    continue;
-                }
-
-                // Check if numbers vary by more than 3
-                for(int i = 1; i < readings.Count; i++) {
-                    if(Math.Abs(readings[i] - readings[i - 1]) > 3) {
-                        varyingWithin3 = false;
-                        break;
-                    }
-                }
-
-                if(!varyingWithin3) {
-                    continue;
-                }
-
-                // If we made it here, the report is either all increasing or 
-                // decreasing, and the numbers do not vary by more than 3
-                report.IsSafe = true;
             }
 
             int numSafe = _reports.Count(r => r.IsSafe);
@@ -90,32 +51,36 @@ namespace AdventOfCode_2024
                 {
                     string? currentLine = string.Empty;
 
-                    while((currentLine = reader.ReadLine()) != null) {
+                    while ((currentLine = reader.ReadLine()) != null)
+                    {
                         // Each report is on a line and the readings separated by a space
                         string[] readings = currentLine.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
                         List<int> readingsList = new List<int>();
 
-                        foreach(var reading in readings) {
+                        foreach (var reading in readings)
+                        {
                             var readingParse = int.TryParse(reading, out int parsedReading);
 
-                            if(!readingParse) {
+                            if (!readingParse)
+                            {
                                 Console.WriteLine($"Invalid input: {currentLine}");
                                 continue;
                             }
 
                             readingsList.Add(parsedReading);
                         }
-                        
+
 
                         // If we made it here, good to create the report
-                        var report = new Report {
+                        var report = new Report
+                        {
                             Readings = readingsList,
                             IsSafe = false
                         };
 
                         _reports.Add(report);
-    
+
                     }
                 }
             }
@@ -125,9 +90,61 @@ namespace AdventOfCode_2024
             }
         }
 
-        private sealed class Report 
+        private bool IsSafe(List<int> readings)
         {
-            public List<int> Readings = []; 
+            bool allIncreasing = true;
+            bool allDecreasing = true;
+            bool varyingWithin3 = true;
+
+            // Check if each number is increasing
+            for (int i = 1; i < readings.Count; i++)
+            {
+                if (readings[i] < readings[i - 1] || readings[i] == readings[i - 1])
+                {
+                    allIncreasing = false;
+                    break;
+                }
+            }
+
+            // Check if each number is decreasing
+            for (int i = 1; i < readings.Count; i++)
+            {
+                if (readings[i] > readings[i - 1] || readings[i] == readings[i - 1])
+                {
+                    allDecreasing = false;
+                    break;
+                }
+            }
+
+            // If it is not all increasing or all decreasing, unsafe
+            if (!allIncreasing && !allDecreasing)
+            {
+                return false;
+            }
+
+            // Check if numbers vary by more than 3
+            for (int i = 1; i < readings.Count; i++)
+            {
+                if (Math.Abs(readings[i] - readings[i - 1]) > 3)
+                {
+                    varyingWithin3 = false;
+                    break;
+                }
+            }
+
+            if (!varyingWithin3)
+            {
+                return false;
+            }
+
+            // If we made it here, the readings varying within 3 
+            // and strictly increasing or decreasing
+            return true;
+        }
+
+        private sealed class Report
+        {
+            public List<int> Readings = [];
             public bool IsSafe = false;
         }
 
