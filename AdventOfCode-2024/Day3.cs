@@ -11,7 +11,11 @@ namespace AdventOfCode_2024
         Need to pick out all the "mul" instructions and sum their products. 
 
         Part Two:
-        
+        The same as part one except that we will only get the sum of 
+        the products of the mul() instructions that are enabled. At the 
+        beginning of the program, the mul instructions are enabled. They 
+        can be disabled by a don't() instruction and re-enabled with a 
+        do() instruction.
 
 
     */
@@ -19,13 +23,15 @@ namespace AdventOfCode_2024
     {
         public string MenuDescription { get; } = "Mull It Over";
         private readonly string _inputFilePath;
-        private List<(int, int)> _numberPairs;
+        private List<(int, int)> _partOneNumberPairs;
+        private List<(int, int)> _partTwoNumberPairs;
 
         public Day3()
         {
             _inputFilePath = "./files/day3-input.txt";
-            _numberPairs = new List<(int, int)>();
-            LoadData();
+            _partOneNumberPairs = new List<(int, int)>();
+            LoadDataPartOne();
+            LoadDataPartTwo();
         }
 
         public void SolveAll()
@@ -38,7 +44,7 @@ namespace AdventOfCode_2024
         {
             int total = 0;
 
-            foreach(var pair in _numberPairs)
+            foreach(var pair in _partOneNumberPairs)
             {
                 var product = pair.Item1 * pair.Item2;
                 total += product;
@@ -52,7 +58,7 @@ namespace AdventOfCode_2024
             throw new NotImplementedException();
         }
 
-        private void LoadData()
+        private void LoadDataPartOne()
         {
             // Test at: https://regex101.com
             string regexPattern = @"mul\(\s*(\d+)\s*,\s*(\d+)\s*\)";
@@ -81,7 +87,7 @@ namespace AdventOfCode_2024
                                 continue;
                             }
 
-                            _numberPairs.Add((parsedFirstNumber, parsedSecondNumber));
+                            _partOneNumberPairs.Add((parsedFirstNumber, parsedSecondNumber));
                         }
                     }
                 }
@@ -90,6 +96,11 @@ namespace AdventOfCode_2024
             {
                 Console.WriteLine($"An error occurred while trying to read the input: {ex.Message}");
             }
+        }
+
+        private void LoadDataPartTwo()
+        {
+
         }
 
     }
