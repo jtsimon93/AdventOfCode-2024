@@ -5,6 +5,15 @@ namespace AdventOfCode_2024
 
     /*
         Challenge URL: https://adventofcode.com/2024/day/2
+
+        For the first part, a report is safe if:
+            - All readings are either strictly increasing or strictly decreasing
+            - No reading varies by more than 3 than the previous
+
+        For the second part, a report is safe if:
+            - The conditions were met in part 1 
+            - OR if removing a single level from a report would make it safe under
+                the first part conditions
     */
     public class Day2 : IAdventOfCodeDayChallenge
     {
@@ -22,7 +31,7 @@ namespace AdventOfCode_2024
         public void SolveAll()
         {
             SolvePart1();
-            //SolvePart2();
+            SolvePart2();
         }
 
         public void SolvePart1()
@@ -43,7 +52,26 @@ namespace AdventOfCode_2024
 
         public void SolvePart2()
         {
-            throw new NotImplementedException();
+            // We only need to recheck the unsafe reports to see
+            // if they can be satisified by removing one "level"
+            foreach(var report in _reports.Where(r => !r.IsSafe))
+            {
+                // Remove one item and see if that makes it safe
+                for(int i = 0; i < report.Readings.Count; i++)
+                {
+                    var modified = new List<int>(report.Readings);
+                    modified.RemoveAt(i);
+
+                    if(IsSafe(modified))
+                    {
+                        report.IsSafe = true;
+                        break;
+                    }
+                }
+            }
+
+            int numSafe = _reports.Count(r => r.IsSafe);
+            Console.WriteLine($"Part two safe: {numSafe}");
         }
 
         private void LoadData()
