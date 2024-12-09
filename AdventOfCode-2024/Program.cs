@@ -11,6 +11,7 @@ namespace AdventOfCode_2024
             {
                 new Day1(),
                 new Day2(),
+                new Day3(),
             };
 
             while (true)
