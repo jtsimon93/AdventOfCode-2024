@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace AdventOfCode_2024
 {
 
