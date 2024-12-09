@@ -2,6 +2,19 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode_2024
 {
+    /*
+        Challenge URL: https://adventofcode.com/2024/day/3
+
+        Part One: 
+        Provide the sum of all of the multiplication instructions. 
+        They are in the file as mul(xxx, yyy)
+        Need to pick out all the "mul" instructions and sum their products. 
+
+        Part Two:
+        
+
+
+    */
     public class Day3 : IAdventOfCodeDayChallenge
     {
         public string MenuDescription { get; } = "Mull It Over";
@@ -17,13 +30,21 @@ namespace AdventOfCode_2024
 
         public void SolveAll()
         {
-            //SolvePart1();
+            SolvePart1();
             //SolvePart2();
         }
 
         public void SolvePart1()
         {
-            throw new NotImplementedException();
+            int total = 0;
+
+            foreach(var pair in _numberPairs)
+            {
+                var product = pair.Item1 * pair.Item2;
+                total += product;
+            }
+
+            Console.WriteLine($"The sum of all the multiplication pairs is: {total}");
         }
 
         public void SolvePart2()
