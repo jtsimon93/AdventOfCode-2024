@@ -3,6 +3,9 @@ using Microsoft.VisualBasic;
 namespace AdventOfCode_2024
 {
 
+    /*
+        Challenge URL: https://adventofcode.com/2024/day/2
+    */
     public class Day2 : IAdventOfCodeDayChallenge
     {
         public string MenuDescription { get; } = "Red Nose Reports";
