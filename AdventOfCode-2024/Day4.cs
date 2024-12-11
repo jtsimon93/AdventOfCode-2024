@@ -5,19 +5,21 @@ namespace AdventOfCode_2024
         public string MenuDescription { get; } = "Ceres Search";
         private readonly string _inputFilePath;
         private char[,] _grid;
-        private readonly string _searchWord;
+        private readonly string _searchWordPartOne;
+        private readonly string _searchWordPartTwo;
 
         public Day4()
         {
             _inputFilePath = "./files/day4-input.txt";
-            _searchWord = "XMAS";
+            _searchWordPartOne = "XMAS";
+            _searchWordPartTwo = "MAS";
         }
 
         public void SolveAll()
         {
             LoadData();
             SolvePart1();
-            //SolvePart2();
+            SolvePart2();
         }
 
         public void SolvePart1()
@@ -42,7 +44,7 @@ namespace AdventOfCode_2024
                 {
                     foreach (var direction in directions.Values)
                     {
-                        if (SearchWordPartOne(_searchWord, row, col, direction))
+                        if (SearchWord(_searchWordPartOne, row, col, direction))
                         {
                             occurrences++;
                         }
@@ -50,16 +52,59 @@ namespace AdventOfCode_2024
                 }
             }
 
-            Console.WriteLine($"Part One: {_searchWord} was found: {occurrences} times.");
+            Console.WriteLine($"Part One: {_searchWordPartOne} was found: {occurrences} times.");
 
         }
 
         public void SolvePart2()
         {
-            throw new NotImplementedException();
+            int occurrences = 0;
+
+            for (int row = 1; row < _grid.GetLength(0) - 1; row++)
+            {
+                for (int col = 1; col < _grid.GetLength(1) - 1; col++)
+                {
+                    if (_grid[row, col] != 'A') continue;
+
+                    // Positions for first diagonal (top-left to bottom-right)
+                    int row1_d1 = row - 1, col1_d1 = col - 1;
+                    int row3_d1 = row + 1, col3_d1 = col + 1;
+
+                    // Positions for second diagonal (top-right to bottom-left)
+                    int row1_d2 = row - 1, col1_d2 = col + 1;
+                    int row3_d2 = row + 1, col3_d2 = col - 1;
+
+                    // Check boundaries for both diagonals
+                    if (IsInBounds(row1_d1, col1_d1) && IsInBounds(row3_d1, col3_d1) &&
+                        IsInBounds(row1_d2, col1_d2) && IsInBounds(row3_d2, col3_d2))
+                    {
+                        // Get the words formed along both diagonals
+                        string diagonal1 = $"{_grid[row1_d1, col1_d1]}{_grid[row, col]}{_grid[row3_d1, col3_d1]}";
+                        string diagonal2 = $"{_grid[row1_d2, col1_d2]}{_grid[row, col]}{_grid[row3_d2, col3_d2]}";
+
+                        // Check if both diagonals form "MAS" or "SAM"
+                        bool diagonal1Matches = diagonal1 == "MAS" || diagonal1 == "SAM";
+                        bool diagonal2Matches = diagonal2 == "MAS" || diagonal2 == "SAM";
+
+                        if (diagonal1Matches && diagonal2Matches)
+                        {
+                            occurrences++;
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine($"Part Two: X-shaped {_searchWordPartTwo} patterns found: {occurrences} times.");
         }
 
-        private bool SearchWordPartOne(string word, int startRow, int startCol, (int dr, int dc) direction)
+        private bool IsInBounds(int row, int col)
+        {
+            return row >= 0 && row < _grid.GetLength(0) &&
+                   col >= 0 && col < _grid.GetLength(1);
+        }
+
+
+        private bool SearchWord(string word, int startRow, int startCol, (int dr, int dc) direction)
         {
             if (string.IsNullOrEmpty(word))
             {
@@ -74,7 +119,7 @@ namespace AdventOfCode_2024
             int endRow = startRow + (word.Length - 1) * direction.dr;
             int endCol = startCol + (word.Length - 1) * direction.dc;
 
-            if(endRow < 0 || endRow >= _grid.GetLength(0) || endCol < 0 || endCol >= _grid.GetLength(1))
+            if (endRow < 0 || endRow >= _grid.GetLength(0) || endCol < 0 || endCol >= _grid.GetLength(1))
             {
                 return false;
             }
