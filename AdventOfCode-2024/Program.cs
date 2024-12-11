@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-
-namespace AdventOfCode_2024
+﻿namespace AdventOfCode_2024
 {
     internal static class Program
     {
@@ -12,6 +9,7 @@ namespace AdventOfCode_2024
                 new Day1(),
                 new Day2(),
                 new Day3(),
+                new Day4(),
             };
 
             while (true)
