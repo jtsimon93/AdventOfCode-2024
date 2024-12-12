@@ -23,12 +23,53 @@ namespace AdventOfCode_2024
 
         public void SolvePart1()
         {
-            throw new NotImplementedException();
+            var correctUpdates = new List<List<int>>();
+
+            // Determine correct updates
+            foreach (var update in _updateBatches)
+            {
+                if (CheckForCorrectOrder(update))
+                {
+                    correctUpdates.Add(update);
+                }
+            }
+
+            // Get the middle number from each correct batch
+            List<int> middleNumbers = new List<int>();
+
+            foreach (var update in correctUpdates)
+            {
+                int middleIndex = (update.Count / 2);
+                int middleNumber = update[middleIndex];
+                middleNumbers.Add(middleNumber);
+            }
+
+            Console.WriteLine($"Sum of middles for part one: {middleNumbers.Sum()}");
         }
 
         public void SolvePart2()
         {
             throw new NotImplementedException();
+        }
+
+        private bool CheckForCorrectOrder(List<int> updateBatch)
+        {
+            HashSet<int> numbersSeen = new HashSet<int>();
+
+            foreach (var num in updateBatch)
+            {
+                // List of the numbers that must come before the number being checked
+                List<int> mustComeBefore = _updateRules[num];
+
+                if (numbersSeen.Overlaps(mustComeBefore))
+                {
+                    return false;
+                }
+
+                numbersSeen.Add(num);
+            }
+
+            return true;
         }
 
         private void LoadData()
