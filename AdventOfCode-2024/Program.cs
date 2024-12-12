@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode_2024
+namespace AdventOfCode_2024
 {
     internal static class Program
     {
@@ -19,17 +19,17 @@
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Advent of Code 2024");
                 Console.ResetColor();
-                
+
                 Console.WriteLine(new string('-', 40));
-                
-                for(int i = 0; i < adventDayChallenges.Count; i++) 
+
+                for (int i = 0; i < adventDayChallenges.Count; i++)
                 {
                     Console.Write($"{i + 1}. ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine(adventDayChallenges[i].MenuDescription);
                     Console.ResetColor();
                 }
-                
+
                 Console.WriteLine(new string('-', 40));
                 Console.WriteLine("Select a day (or 'q' to quit): ");
 
@@ -42,11 +42,11 @@
                 }
 
                 // Validate input
-                if (int.TryParse(input, out int selection) 
-                    && selection > 0 
+                if (int.TryParse(input, out int selection)
+                    && selection > 0
                     && selection <= adventDayChallenges.Count)
                 {
-                    try 
+                    try
                     {
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Magenta;
