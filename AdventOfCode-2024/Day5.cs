@@ -18,7 +18,7 @@ namespace AdventOfCode_2024
         public void SolveAll()
         {
             SolvePart1();
-            //SolvePart2();
+            SolvePart2();
         }
 
         public void SolvePart1()
@@ -49,7 +49,42 @@ namespace AdventOfCode_2024
 
         public void SolvePart2()
         {
+            var correctBatches = new List<List<int>>();
+
+            foreach (var updateBatch in _updateBatches)
+            {
+                if (CheckForCorrectOrder(updateBatch))
+                {
+                    correctBatches.Add(updateBatch);
+                }
+                else
+                {
+                    correctBatches.Add(FixBatch(updateBatch));
+                }
+            }
+
+            List<int> middleNumbers = new List<int>();
+            foreach (var update in correctBatches)
+            {
+                int middleIndex = (update.Count / 2);
+                int middleNumber = update[middleIndex];
+                middleNumbers.Add(middleNumber);
+            }
+
+            Console.WriteLine($"Sum of middles for part two: {middleNumbers.Sum()}");
+
+        }
+
+        // WIP
+        private List<int> FixBatch(List<int> updateBatch)
+        {
             throw new NotImplementedException();
+
+            List<int> correctedOrder = new List<int>();
+
+
+
+            return correctedOrder;
         }
 
         private bool CheckForCorrectOrder(List<int> updateBatch)
