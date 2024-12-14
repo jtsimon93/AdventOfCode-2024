@@ -55,7 +55,9 @@ namespace AdventOfCode_2024
             {
                 if (CheckForCorrectOrder(updateBatch))
                 {
-                    correctBatches.Add(updateBatch);
+                    // Prompt is to only add the incorrect ones
+                    // so don't add these
+                    //correctBatches.Add(updateBatch);
                 }
                 else
                 {
@@ -78,13 +80,65 @@ namespace AdventOfCode_2024
         // WIP
         private List<int> FixBatch(List<int> updateBatch)
         {
-            throw new NotImplementedException();
+            // Create graph and in-degree tracking
+            Dictionary<int, HashSet<int>> graph = new Dictionary<int, HashSet<int>>();
+            Dictionary<int, int> inDegree = new Dictionary<int, int>();
 
-            List<int> correctedOrder = new List<int>();
+            // Initialize
+            foreach (var num in updateBatch)
+            {
+                graph[num] = new HashSet<int>();
+                inDegree[num] = 0;
+            }
 
+            // Build dependencies
+            foreach (var num in updateBatch)
+            {
+                if (_updateRules.ContainsKey(num))
+                {
+                    foreach (var dependency in _updateRules[num])
+                    {
+                        if (updateBatch.Contains(dependency))
+                        {
+                            // Reverse the edge direction: dependency must come before num
+                            graph[dependency].Add(num);
+                            inDegree[num]++;
+                        }
+                    }
+                }
+            }
 
+            // Process nodes with priority queue (larger numbers first when no dependencies)
+            var pq = new PriorityQueue<int, (int degree, int value)>();
 
-            return correctedOrder;
+            foreach (var num in updateBatch)
+            {
+                if (inDegree[num] == 0)
+                {
+                    // Use tuple to prioritize by in-degree first, then by value (descending)
+                    pq.Enqueue(num, (0, -num));
+                }
+            }
+
+            List<int> result = new List<int>();
+
+            while (pq.Count > 0)
+            {
+                int current = pq.Dequeue();
+                result.Add(current);
+
+                foreach (var neighbor in graph[current])
+                {
+                    inDegree[neighbor]--;
+                    if (inDegree[neighbor] == 0)
+                    {
+                        // Prioritize by in-degree first, then by value (descending)
+                        pq.Enqueue(neighbor, (inDegree[neighbor], -neighbor));
+                    }
+                }
+            }
+
+            return result;
         }
 
         private bool CheckForCorrectOrder(List<int> updateBatch)
